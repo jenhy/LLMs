@@ -46,6 +46,16 @@ kaggle我的LLMs学习GPT2数据集：
 www.kaggle.com/datasets/chenjianhai2025/gpt2-124m-model
 """
 
+## 使用本地 VS Code + 远程 Kaggle开发环境
+# 提交代码
+git add .
+git commit -m "fix: 更新模型结构/逻辑"
+git push origin master
 
 
+!git clone https://github.com/jenhy/LLMs.git
 
+%cd LLMs
+
+import os
+os.chdir("/kaggle/working/LLMs")
