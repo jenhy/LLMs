@@ -59,3 +59,17 @@ git push origin master
 
 import os
 os.chdir("/kaggle/working/LLMs")
+
+
+# Auto clone or update repo
+import os
+
+REPO_NAME = "LLMs"
+REPO_URL = "https://github.com/jenhy/LLMs.git"
+
+if not os.path.exists(REPO_NAME):
+    !git clone {REPO_URL}
+else:
+    %cd {REPO_NAME}
+    !git pull origin master
+    %cd ..
