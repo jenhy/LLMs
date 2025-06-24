@@ -114,7 +114,7 @@ if __name__ == "__main__":
     print(f"model.tok_emb.weight.device:{model.tok_emb.weight.device}")
 
     load_weights_into_gpt(model, params)
-    # model.eval()
+    model.eval()
 
     num_workers = 0
     batch_size = 8
