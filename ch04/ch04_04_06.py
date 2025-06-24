@@ -42,10 +42,6 @@ class GPTModel(nn.Module):
         self.out_head = nn.Linear(cfg["emb_dim"], cfg["vocab_size"], bias=False)
 
     def forward(self, in_idx):
-        device = self.tok_emb.weight.device
-        print(f"self.tok_emb.weight.device: {device}")
-        in_idx = in_idx.to(device)
-        print(f"in_idx.device:{in_idx.device}")
         batch_size, seq_len = in_idx.shape
         tok_embeds = self.tok_emb(in_idx)
 
@@ -55,7 +51,7 @@ class GPTModel(nn.Module):
         x = self.drop_emb(x)
         x = self.trf_blocks(x)
         x = self.final_norm(x)
-        logits = self.out_head(x)   # 这里我误写成了final_norm(x)，导致输出的结果为768维向量，而不是vocab_size维向量
+        logits = self.out_head(x)
 
         return logits
     
