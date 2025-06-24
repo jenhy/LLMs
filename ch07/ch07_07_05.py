@@ -144,10 +144,10 @@ if __name__ == "__main__":
     # print(input_text)
 
     inputs_ids = text_to_token_ids(input_text, tokenizer)
-    print("[main] Before .to(), input_ids.device:", inputs_ids.device)
+    print("[main] Before .to(), inputs_ids.device:", inputs_ids.device)
 
     inputs_ids = inputs_ids.to(device)
-    print("[main] After .to(), input_ids.device:", inputs_ids.device)
+    print("[main] After .to(), inputs_ids.device:", inputs_ids.device)
 
     token_ids = generate(model=model, idx=inputs_ids, max_new_tokens=35, context_size=BASE_CONFIG['context_length'], eos_id=50256)
     generated_text = token_ids_to_text(token_ids, tokenizer)
