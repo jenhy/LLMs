@@ -46,7 +46,7 @@ def calc_loss_batch(input_batch, target_batch, model, device):
     # print("logits.shape:", logits.shape)
     # print("target.shape:", target_batch.shape)
 
-    print(f"[DEBUG] input_batch.device: {input_batch.device}, target_batch.device: {target_batch.device}, logits.device: {logits.device}")
+    # print(f"[DEBUG] input_batch.device: {input_batch.device}, target_batch.device: {target_batch.device}, logits.device: {logits.device}")
 
     # cross_entropy：计算交叉熵损失。PyTorch 的 F.cross_entropy() 会自动对 logits 进行 softmax，然后计算预测值与真实标签之间的负对数似然损失（NLLLoss）。
     # 参数解释：
