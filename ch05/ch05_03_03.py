@@ -12,6 +12,8 @@ from ch05.ch05_01_03 import get_data_loaders
 from ch05.ch05_02_01 import train_model_simple
 
 def generate(model, idx, max_new_tokens, context_size, temperature=0.0, top_k=None, eos_id=None):
+    device = idx.device
+    
     for _ in range(max_new_tokens):
         idx_cond = idx[:, -context_size:]
         with torch.no_grad():
