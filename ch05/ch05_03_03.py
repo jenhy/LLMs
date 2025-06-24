@@ -17,7 +17,7 @@ def generate(model, idx, max_new_tokens, context_size, temperature=0.0, top_k=No
         print(f"[generate] Step {i}: idx_cond device = {idx_cond.device}")
 
         with torch.no_grad():
-            logits = model(idx_cond)
+            logits = model(idx_cond.to(model.device))
         logits = logits[:, -1, :]
 
         if top_k is not None:
