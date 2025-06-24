@@ -114,7 +114,7 @@ if __name__ == "__main__":
     print(f"model.tok_emb.weight.device:{model.tok_emb.weight.device}")
 
     load_weights_into_gpt(model, params)
-    model.eval()
+    # model.eval()
 
     num_workers = 0
     batch_size = 8
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     inputs_ids = inputs_ids.to(device)
     print("[main] After .to(), inputs_ids.device:", inputs_ids.device)
 
-    token_ids = generate(model=model, idx=inputs_ids.to(device), max_new_tokens=35, context_size=BASE_CONFIG['context_length'], eos_id=50256)
+    token_ids = generate(model=model, idx=inputs_ids, max_new_tokens=35, context_size=BASE_CONFIG['context_length'], eos_id=50256)
     generated_text = token_ids_to_text(token_ids, tokenizer)
 
     response_text = generated_text[len(input_text):].strip()
