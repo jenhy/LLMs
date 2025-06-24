@@ -41,7 +41,8 @@ def calc_loss_batch(input_batch, target_batch, model, device):
     # 前向传播：计算预测结果（logits）。输入形状为[B, T]，其中B是batch size，T是token序列长度context_length。输出形状为[B, T, vocab_size]，其中B是batch size，T是token序列长度context_length，vocab_size是词汇表大小。
     # 如果是语言模型，预测所有词元的预测结果，因此取model(input_batch)
     # 如果是分类任务，只关注最后一个词元的预测结果，因此取model(input_batch)[:, -1, :]，输出形状为[B, num_classes]，其中B是batch size，num_classes是类别数量。
-    logits = model(input_batch)[:, -1, :]
+    logits = model(input_batch)
+    # logits = model(input_batch)[:, -1, :]
     # print("logits.shape:", logits.shape)
     # print("target.shape:", target_batch.shape)
 
