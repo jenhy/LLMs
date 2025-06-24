@@ -30,6 +30,8 @@ def generate(model, idx, max_new_tokens, context_size, temperature=0.0, top_k=No
             idx_next = torch.argmax(logits, dim=-1, keepdim=True)
         if idx_next == eos_id:
             break
+
+        idx_next = idx_next.to(device)
         idx = torch.cat((idx, idx_next), dim=1)
     return idx
 
