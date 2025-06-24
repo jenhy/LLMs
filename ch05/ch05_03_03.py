@@ -12,7 +12,6 @@ from ch05.ch05_01_03 import get_data_loaders
 from ch05.ch05_02_01 import train_model_simple
 
 def generate(model, idx, max_new_tokens, context_size, temperature=0.0, top_k=None, eos_id=None):
-    print("[generate] NEW VERSION")
     # 确保输入张量在模型设备
     idx = idx.to(next(model.parameters()).device)
     print(f"[generate] Start: idx device = {idx.device}")
