@@ -80,9 +80,11 @@ class MultiHeadAttention(nn.Module):
         # 计算每个头的点积。即(b, num_heads, num_tokens, head_dim) @ (b, num_heads, head_dim, num_tokens) = (b, num_heads, num_tokens, num_tokens)
         attn_scores = queries @ keys.transpose(2, 3)
         # self.mask.bool()[:num_tokens, :num_tokens]：将 mask 转成布尔类型（True 表示要被 mask 的位置）。然后根据当前输入序列长度 num_tokens 做裁剪，表示从 mask 中裁剪出当前实际 token 数量的子矩阵，用作注意力遮挡区域的布尔掩码。保证对齐实际 token 数量。
+        # mask_bool = mask_bool.to(attn_scores.device): 将 mask_bool 移动到与 attn_scores 同一设备上。
         # masked_fill_(mask, value)：这是 PyTorch 的就地操作（带 _），意思是：对于 mask 为 True 的位置，将 attn_score 中对应元素赋值为 -inf。attn_score[mask == True] = -inf
         # 总结来说：用布尔掩码把未来的 token 注意力打分设置为 -inf，确保 softmax 后对应的注意力权重为 0，实现“只能看过去，不能看未来”的因果自注意力机制（causal self-attention）。
         mask_bool = self.mask.bool()[:num_tokens, :num_tokens]
+        mask_bool = mask_bool.to(attn_scores.device)
         attn_scores.masked_fill_(mask_bool, -torch.inf)
 
         ## 计算注意力权重
