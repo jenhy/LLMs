@@ -29,7 +29,7 @@ def format_input(entry):
 
     return instruction_text + input_text
 
-def random_split(df, train_frac, test_frac):
+def split_dataset(df, train_frac, test_frac):
     """
     拆分数据集
     """
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     desired_response = f"\n\n### Response:\n{data[50]['output']}"
     print(model_input + desired_response)
 
-    train_data, test_data, val_data = random_split(data, 0.85, 0.1)
+    train_data, test_data, val_data = split_dataset(data, 0.85, 0.1)
     print("Number of training entries:", len(train_data))
     print("Number of validation entries:", len(val_data))
     print("Number of test entries:", len(test_data))
