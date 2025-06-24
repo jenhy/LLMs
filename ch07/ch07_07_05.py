@@ -142,7 +142,7 @@ if __name__ == "__main__":
     input_text = format_input(val_data[0])
     # print(input_text)
 
-    token_ids = generate(model=model, idx=text_to_token_ids(input_text, tokenizer), max_new_tokens=35, context_size=BASE_CONFIG['context_length'], eos_id=50256)
+    token_ids = generate(model=model, idx=text_to_token_ids(input_text, tokenizer).to(device), max_new_tokens=35, context_size=BASE_CONFIG['context_length'], eos_id=50256)
     generated_text = token_ids_to_text(token_ids, tokenizer)
 
     response_text = generated_text[len(input_text):].strip()
