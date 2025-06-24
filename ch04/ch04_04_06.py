@@ -42,6 +42,8 @@ class GPTModel(nn.Module):
         self.out_head = nn.Linear(cfg["emb_dim"], cfg["vocab_size"], bias=False)
 
     def forward(self, in_idx):
+        device = self.tok_emb.weight.device
+        in_idx = in_idx.to(device)
         print(f"in_idx.device:{in_idx.device}")
         batch_size, seq_len = in_idx.shape
         tok_embeds = self.tok_emb(in_idx)
