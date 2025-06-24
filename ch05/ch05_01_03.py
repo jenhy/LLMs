@@ -53,8 +53,8 @@ def calc_loss_batch(input_batch, target_batch, model, device):
     # 如果是语言模型，需要展平，即logits.flatten(0, 1), target_batch.flatten()
     # 如果是分类任务，不需要展平，即logits, target_batch，形状分别为[B, num_classes]、[B]
 
-    # loss = torch.nn.functional.cross_entropy(logits.flatten(0, 1), target_batch.flatten())
-    loss = torch.nn.functional.cross_entropy(logits, target_batch)
+    loss = torch.nn.functional.cross_entropy(logits.flatten(0, 1), target_batch.flatten())
+    # loss = torch.nn.functional.cross_entropy(logits, target_batch)
 
     # 返回这个 batch 的平均损失
     return loss
