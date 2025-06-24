@@ -16,7 +16,7 @@ from ch07.ch07_07_03 import InstructionDataset
 
 import os
 # 设置代理
-os.environ["HTTPS_PROXY"] = "http://127.0.0.1:49845"
+# os.environ["HTTPS_PROXY"] = "http://127.0.0.1:49845"
 
 
 if __name__ == "__main__":
