@@ -1,5 +1,9 @@
 import os,sys,json
 
+import numpy as np
+import tensorflow as tf
+from tqdm import tqdm
+
 import torch
 from torch.utils.data import Dataset
 from functools import partial
@@ -22,26 +26,60 @@ from ch07.ch07_07_03 import custom_collate_fn
 from ch07.ch07_07_03 import InstructionDataset
 from ch05.ch05_03_03 import generate, text_to_token_ids, token_ids_to_text
 
+def load_gpt2_params_from_tf_ckpt(ckpt_path, settings):
+    # Initialize parameters dictionary with empty blocks for each layer
+    params = {"blocks": [{} for _ in range(settings["n_layer"])]}
+
+    # Iterate over each variable in the checkpoint
+    for name, _ in tf.train.list_variables(ckpt_path):
+        # Load the variable and remove singleton dimensions
+        variable_array = np.squeeze(tf.train.load_variable(ckpt_path, name))
+
+        # Process the variable name to extract relevant parts
+        variable_name_parts = name.split("/")[1:]  # Skip the 'model/' prefix
+
+        # Identify the target dictionary for the variable
+        target_dict = params
+        if variable_name_parts[0].startswith("h"):
+            layer_number = int(variable_name_parts[0][1:])
+            target_dict = params["blocks"][layer_number]
+
+        # Recursively access or create nested dictionaries
+        for key in variable_name_parts[1:-1]:
+            target_dict = target_dict.setdefault(key, {})
+
+        # Assign the variable array to the last key
+        last_key = variable_name_parts[-1]
+        target_dict[last_key] = variable_array
+
+    return params
 def download_and_load_gpt2(model_size, models_dir):
-    # 支持 Kaggle Dataset(改写版)
+    # 支持的模型大小
     allowed_sizes = ("124M", "355M", "774M", "1558M")
     if model_size not in allowed_sizes:
-        raise ValueError(f"Model size must be in {allowed_sizes}")
+        raise ValueError(f"Model size must be one of {allowed_sizes}")
 
-    # Kaggle Dataset 路径
-    kaggle_dataset_path = f"/kaggle/input/gpt2-355m-model/{models_dir}/{model_size}"
+    # 尝试在 Kaggle Dataset 中查找模型路径
+    kaggle_dataset_path = f"/kaggle/input/gpt2-{model_size.lower()}-model/{models_dir}/{model_size}"
     if os.path.exists(kaggle_dataset_path):
         print(f"使用 Kaggle Dataset 中的模型：{kaggle_dataset_path}")
         model_dir = kaggle_dataset_path
     else:
-        raise FileNotFoundError("未在 Kaggle Dataset 中找到模型目录。请确认数据集已添加。")
+        raise FileNotFoundError(
+            f"未在 Kaggle Dataset 中找到模型目录：{kaggle_dataset_path}\n"
+            "请确保已将 gpt2-xxx-model 数据集添加到 Notebook。"
+        )
 
-    # 你只需要 hparams.json 文件来读取结构参数
+    # 读取 hparams 设置
     hparams_path = os.path.join(model_dir, "hparams.json")
     settings = json.load(open(hparams_path, "r", encoding="utf-8"))
 
-    # 返回设置，但不加载权重（因为你模型用的是 GPTModel，从头训练）
-    params = None
+    # 读取 TensorFlow checkpoint 参数
+    tf_ckpt_path = tf.train.latest_checkpoint(model_dir)
+    if tf_ckpt_path is None:
+        raise FileNotFoundError("未能找到 TensorFlow checkpoint 文件（model.ckpt.*）")
+
+    params = load_gpt2_params_from_tf_ckpt(tf_ckpt_path, settings)
 
     return settings, params
 
