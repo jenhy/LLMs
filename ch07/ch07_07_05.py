@@ -111,7 +111,7 @@ if __name__ == "__main__":
 
     model = GPTModel(BASE_CONFIG)
     model.to(device)
-    print(model.tok_emb.weight.device)
+    print(f"model.tok_emb.weight.device:{model.tok_emb.weight.device}")
 
     load_weights_into_gpt(model, params)
     model.eval()
