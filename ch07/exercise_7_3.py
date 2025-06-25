@@ -124,7 +124,7 @@ if __name__ == "__main__":
     tokenizer = tiktoken.get_encoding("gpt2")
 
     # 函数包装器
-    customized_collate_fn = partial(custom_collate_fn, device=device, allowed_max_length=1024)
+    customized_collate_fn = partial(custom_collate_fn, device=device, allowed_max_length=512)
 
     file_path = 'alpaca_data.json'
 
@@ -159,13 +159,13 @@ if __name__ == "__main__":
     # print(response_text)
 
     train_dataset = InstructionDataset(train_data, tokenizer)
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, collate_fn=custom_collate_fn, shuffle=True, drop_last=True, num_workers=num_workers)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, collate_fn=customized_collate_fn, shuffle=True, drop_last=True, num_workers=num_workers)
 
     test_dataset = InstructionDataset(test_data, tokenizer)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, collate_fn=custom_collate_fn, shuffle=False, drop_last=False, num_workers=num_workers)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, collate_fn=customized_collate_fn, shuffle=False, drop_last=False, num_workers=num_workers)
 
     val_dataset = InstructionDataset(val_data, tokenizer)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, collate_fn=custom_collate_fn, shuffle=False, drop_last=False, num_workers=num_workers)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, collate_fn=customized_collate_fn, shuffle=False, drop_last=False, num_workers=num_workers)
 
     # print("Train loader:")
     # for inputs, targets in train_loader:
