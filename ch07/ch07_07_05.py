@@ -10,6 +10,7 @@ from functools import partial
 from torch.utils.data import DataLoader
 import tiktoken
 import time
+ 
 
 # 添加上级路径以便导入自定义模块
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -26,6 +27,7 @@ from ch07.ch07_07_02 import download_and_load_file, format_input, split_dataset
 from ch07.ch07_07_03 import custom_collate_fn
 from ch07.ch07_07_03 import InstructionDataset
 from ch05.ch05_03_03 import generate, text_to_token_ids, token_ids_to_text
+from ch05.ch05_02_01 import plot_losses
 
 def load_gpt2_params_from_tf_ckpt(ckpt_path, settings):
     # Initialize parameters dictionary with empty blocks for each layer
@@ -139,21 +141,21 @@ if __name__ == "__main__":
 
     train_data, test_data, val_data = split_dataset(data, 0.85, 0.1)
 
-    input_text = format_input(val_data[0])
+    # input_text = format_input(val_data[0])
     # print(input_text)
 
-    inputs_ids = text_to_token_ids(input_text, tokenizer)
+    # inputs_ids = text_to_token_ids(input_text, tokenizer)
     # print("[main] Before .to(), inputs_ids.device:", inputs_ids.device)
 
-    inputs_ids = inputs_ids.to(device)
+    # inputs_ids = inputs_ids.to(device)
     # print("[main] After .to(), inputs_ids.device:", inputs_ids.device)
 
-    token_ids = generate(model=model, idx=inputs_ids, max_new_tokens=35, context_size=BASE_CONFIG['context_length'], eos_id=50256)
-    generated_text = token_ids_to_text(token_ids, tokenizer)
+    # token_ids = generate(model=model, idx=inputs_ids, max_new_tokens=35, context_size=BASE_CONFIG['context_length'], eos_id=50256)
+    # generated_text = token_ids_to_text(token_ids, tokenizer)
 
-    response_text = generated_text[len(input_text):].strip()
+    # response_text = generated_text[len(input_text):].strip()
 
-    print(response_text)
+    # print(response_text)
 
     train_dataset = InstructionDataset(train_data, tokenizer)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, collate_fn=custom_collate_fn, shuffle=True, drop_last=True, num_workers=num_workers)
@@ -186,3 +188,6 @@ if __name__ == "__main__":
     end_time = time.time()
     execution_time_minutes = (end_time - start_time) / 60
     print(f"Execution time: {execution_time_minutes:.2f} minutes.")
+
+    epochs_tensor = torch.linspace(0, num_epochs, len(train_losses))
+    plot_losses(epochs_tensor, track_tokens_seen, train_losses, val_losses)
