@@ -118,7 +118,7 @@ if __name__ == "__main__":
     model.eval()
 
     num_workers = 0
-    batch_size = 8
+    batch_size = 4
 
 
     tokenizer = tiktoken.get_encoding("gpt2")
