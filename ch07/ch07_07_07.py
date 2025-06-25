@@ -10,7 +10,12 @@ from functools import partial
 from torch.utils.data import DataLoader
 import tiktoken
 import time
- 
+import re
+
+# Python 的​​进度条工具,用于在循环或长时间运行的任务中显示进度条，让用户直观地了解程序运行进度、剩余时间和速度等信息。
+# 名字来源于阿拉伯语 ​​"taqaddum" ,意思是“进步”或“进展”（英文：progress）
+from tqdm import tqdm   
+
 
 # 添加上级路径以便导入自定义模块
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -187,3 +192,20 @@ if __name__ == "__main__":
         print(f"\nCorrect response:\n>> {entry['output']}")
         print(f"\nModel response:\n>> {response_text.strip()}\n")
         print("---------------------------")
+
+    for i, entry in tqdm(enumerate(test_data), total=len(test_data)):
+        input_text = format_input(entry)
+
+        token_ids = generate(model=model, idx=text_to_token_ids(input_text, tokenizer).to(device), max_new_tokens=256, context_size=BASE_CONFIG['context_length'], eos_id=50256)
+        generated_text = token_ids_to_text(token_ids, tokenizer)
+        response_text = generated_text[len(input_text):].replace("### Response:", "").strip()
+        test_data[i]["model_response"] = response_text
+
+    with open("instruction-data-with-response.json", "w") as file:
+        json.dump(test_data, file, indent=4)
+
+    print(test_data[0])
+
+    file_name = f"{re.sub(r'[ ()]', '', CHOOSE_MODEL)}-sft.pth"
+    torch.save(model.state_dict(), file_name)
+    print(f"Model saved as {file_name}")
