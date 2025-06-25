@@ -9,6 +9,7 @@ from torch.utils.data import Dataset
 from functools import partial
 from torch.utils.data import DataLoader
 import tiktoken
+import time
 
 # 添加上级路径以便导入自定义模块
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -171,8 +172,17 @@ if __name__ == "__main__":
     #     # torch.Size([8, 76]) torch.Size([8, 76])
     #     print(inputs.shape, targets.shape)
 
-    with torch.no_grad():
-        train_loss = calc_loss_loader(train_loader, model, device)
-        val_loss = calc_loss_loader(val_loader, model, device)
-    print("Training loss:", train_loss)
-    print("Validation loss:", val_loss)
+    # with torch.no_grad():
+    #     train_loss = calc_loss_loader(train_loader, model, device)
+    #     val_loss = calc_loss_loader(val_loader, model, device)
+    # print("Training loss:", train_loss)
+    # print("Validation loss:", val_loss)
+
+    start_time = time.time()
+    torch.manual_seed(123)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=0.00005, weight_decay=0.01)
+    num_epochs = 2
+    train_losses, val_losses, track_tokens_seen = train_model_simple(model, train_loader, val_loader, optimizer, device, num_epochs=num_epochs, eval_freq=5, eval_iter=5, start_context=format_input(val_data[0]), tokenizer=tokenizer)
+    end_time = time.time()
+    execution_time_minutes = (end_time - start_time) / 60
+    print(f"Execution time: {execution_time_minutes:.2f} minutes.")
