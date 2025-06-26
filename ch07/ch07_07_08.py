@@ -129,20 +129,20 @@ if __name__ == "__main__":
 
     train_data, test_data, val_data = split_dataset(data, 0.85, 0.1)
 
-    for entry in test_data[:3]:
-        prompt = (
-            f"Given the input '{format_input(entry)}' "
-            f"and conrrect output '{entry['output']}', "
-            f"score the model response '{entry['model_response']}'"
-            f" on a scale from 0 to 100, where 100 is the best score. "
-        )
-        print("\nDataset response:")
-        print(">>", entry['output'])
-        print("\nModel response:")
-        print(">>", entry["model_response"])
-        print("\nScore:")
-        print(">>", query_model(prompt))
-        print("\n---------------------------------------")
+    # for entry in test_data[:3]:
+    #     prompt = (
+    #         f"Given the input '{format_input(entry)}' "
+    #         f"and conrrect output '{entry['output']}', "
+    #         f"score the model response '{entry['model_response']}'"
+    #         f" on a scale from 0 to 100, where 100 is the best score. "
+    #     )
+    #     print("\nDataset response:")
+    #     print(">>", entry['output'])
+    #     print("\nModel response:")
+    #     print(">>", entry["model_response"])
+    #     print("\nScore:")
+    #     print(">>", query_model(prompt))
+    #     print("\n---------------------------------------")
 
     scores = generate_model_scores(test_data, "model_response")
     print(f"Number of scores: {len(scores)} of {len(test_data)}")
