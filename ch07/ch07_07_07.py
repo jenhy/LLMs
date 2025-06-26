@@ -33,6 +33,7 @@ from ch07.ch07_07_03 import custom_collate_fn
 from ch07.ch07_07_03 import InstructionDataset
 from ch05.ch05_03_03 import generate, text_to_token_ids, token_ids_to_text
 from ch05.ch05_02_01 import plot_losses
+from ch07.ch07_07_08 import query_model
 
 def load_gpt2_params_from_tf_ckpt(ckpt_path, settings):
     # Initialize parameters dictionary with empty blocks for each layer
@@ -209,3 +210,18 @@ if __name__ == "__main__":
     file_name = f"{re.sub(r'[ ()]', '', CHOOSE_MODEL)}-sft.pth"
     torch.save(model.state_dict(), file_name)
     print(f"Model saved as {file_name}")
+
+    for entry in test_data[:3]:
+        prompt = (
+            f"Given the input '{format_input(entry)}' "
+            f"and conrrect output '{entry['output']}', "
+            f"score the model response '{entry['model_response']}'"
+            f" on a scale from 0 to 100, where 100 is the best score. "
+        )
+        print("\nDataset response:")
+        print(">>", entry['output'])
+        print("\nModel response:")
+        print(">>", entry["model_response"])
+        print("\nScore:")
+        print(">>", query_model(prompt))
+        print("\n---------------------------------------")
